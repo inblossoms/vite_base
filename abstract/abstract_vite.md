@@ -71,3 +71,97 @@
   1. 不同的三方包会有不同的导出格式，这个在路径处理的问题上同时得到了解决；
   2. 对路径的处理上直接使用了 ./vite/deps，方便了路径的重写；
   3. 网络多包传输的性能问题(也是原生esmodule规范不敢支持node_modules的原因之一), 有了依赖预构建以后无论有多少的额外export 和import, vite都会尽可能的将他们进行集成最后只生成一个或者几个模块；
+
+## vite.config.js 
+
+1. vite.config.js 语法提示
+
+   - 导入 `import { defineConfig } from "vite";` ，通过 defineConfig 将配置参数进行包裹：`export default defineConfig ({ ... })`。
+
+   - 通过类型标注的方式：
+
+     ```js
+     /** @type import("vite").UserConfig */
+     const viteConfig = {
+       optimizeDeps: {
+     		exclude: []
+       }
+     }
+     
+     export default viteConfig;
+     ```
+
+2. 生产和开发环境的区分：
+
+   - defineConfig() 可以接收一个函数，而函数的参数 `commad` 中可以拿到我们运行的一个参数，vite 通过参数来辨别是生产还是开发环境；
+
+     ```js
+     // vite.config.js
+     export default defineConfig(({ command }) => {
+       console.log(command)
+       return envResolver[command]();
+     });
+     ```
+
+   - 模块化构建，分别构建不同状态、环境下的配置文件：
+
+     - `vite.base.config`、`vite.dev.config`、`vite.prod.config`;
+
+     - 构建完整的配置文件：
+
+       ```js
+       import { defineConfig } from "vite";
+       import viteBaseConfig from "./vite.base.config";
+       import viteProdConfig from "./vite.prod.config";
+       import viteDevConfig from "./vite.dev.config";
+       
+       const envResolver = {
+         build: () => Object.assign({}, viteBaseConfig, viteProdConfig),
+         serve: () => Object.assign({}, viteBaseConfig, viteDevConfig),
+       };
+       
+       export default defineConfig(({ command }) => {
+         return envResolver[command]();
+       });
+       ```
+
+       
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
