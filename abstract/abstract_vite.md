@@ -33,6 +33,10 @@
 
    - 由于vite支持的是ejs，而ejs需要在浏览器环境才能运行，并不能像cjs一样运行在服务端，这将导致如果去加载node_module中内容则需要大量时间去建立关系图谱；
 
+7. vite 是一个只支持cjs规范的工具，为什么node端在读vite.config.js文件时可以认识ejs？
+
+   - 因为vite他在读取vite.config.js的时候会率先通过node去解析文件语法, 如果发现你是esmodule规范会直接将esmodule规范进行替换变成commonjs规范；
+
 ## vite 预加载机制
 
 - vite 首先会按照用户自定义的入口文件中所引用的依赖调用esbuild (对js语法进行处理的库)，将各种规范的代码转换成ejs规范。然后将转换后的代码放置在当前目录下的 node_modules/.vite/deps 文件中，同时对ejs规范的各个模块进行统一集成，按照用户自定义的出口进行文件输出。
@@ -93,7 +97,7 @@
 
 2. 生产和开发环境的区分：
 
-   - defineConfig() 可以接收一个函数，而函数的参数 `commad` 中可以拿到我们运行的一个参数，vite 通过参数来辨别是生产还是开发环境；
+   - defineConfig() 可以接收一个函数，而函数的参数 `commad` 中可以拿到我们运行的一个参数，vite 通过我们运行指令所带参数来辨别是生产还是开发环境；
 
      ```js
      // vite.config.js
@@ -125,15 +129,59 @@
        });
        ```
 
-       
 
+## vite 环境变量配置
 
+- vite 对于 .env 的环境配置文件内置了 dotenv 的三方库。
+- dotenv 会自动读取 .env 文件，去解析文件中所对应的变量并将其注入到 process 对象下。（但是，vite 考虑到和其他配置的一些冲突问题，所以不会直接注入到 process 对象下。）由于新配置可能会被配置 envDir文件，这将会导致我们在导入config文件时，对导入的env产生冲突。
 
+- 涉及 vite.config.js 中的一些配置：
 
+  - root
+  - envDir：用来配置当前环境变量的文件地址
 
+- vite 对 .env 的处理方式：vite 给我们提供了一些补偿措施，可以通过调用vite的loadEnv来手动确认env文件；
 
+  - process.cwd：process上的一个方法，返回当前node进程的工作目录
 
+    ```js
+    // vite.config.js
+    import {loadEnv} from "vite"
+    
+    export default defineConfig(({command, mode}) => {
+      // 第二个参数：当前env文件所在的目录（可以将当前地址以字符串的形式贴到参数位置），第三个参数时 .env 的文件名,默认值就是 '.env'
+      const env = loadEnv(mode, process.cwd(), '.env')
+      return envResolver[command]();
+    });
+    ```
 
+- **服务端对** 环境变量的使用：
+
+  - .env: 所有环境都需要用到的环境变量
+  - .env.development: 开发环境需要用到的环境变量(默认情况下vite将我们的开发环境取名为development) 
+  - .env.production: 生产环境需要用到的环境变量(默认情况下vite将我们的生产环境取名为production)
+
+- vite 在对 env 文件是如何判别使用哪种环境的文件的？
+
+  - 我们在执行启动命令时会将mode设置为参数传递进来：`pnpm dev --mode production`
+
+- 在调用 loadenv 的时候，vite 会执行如下程序：
+
+  - 找到工程目录下的 .env 文件不解释，并解析其中的环境变量 并放进一个对象里
+
+  - 会将传进来的 mode 变量的值进行拼接: `.env[mode] => .env.development`, 根据我们提供的目录去取对应的配置文件并进行解析, 并放进一个对象。
+
+  - 我们可以理解为：
+
+    ```js
+     const baseEnvConfig = 读取.env的配置
+     const modeEnvConfig = 读取env相关配置
+     const lastEnvConfig = { ...baseEnvConfig, ...modeEnvConfig }
+    ```
+
+- **客户端对** 环境变量的使用：如果是客户端, vite会将对应的环境变量注入到 import.meta.env 里去；https://cn.vitejs.dev/guide/env-and-mode.html#env-variables
+  - 在访问 import.meta.env，为了防止我们将隐私性的变量直接送进import.meta.env中vite对参数做了拦截（默认值显示以 VITE_ 开头的参数），如果配置的环境变量不是以 VITE_ 开头的, 他就不会将配置文件中的参数注入到客户端中去, 如果我们需要更改这个前缀, 可以去使用envPrefix配置
+  - 关于 envPrefix：https://cn.vitejs.dev/config/shared-options.html#envprefix
 
 
 
