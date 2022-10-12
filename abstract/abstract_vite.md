@@ -212,6 +212,42 @@
     3. 通过类名替换后的内容，此时 css 文件依旧是一个字符串；
     4. 接下来就是 vite 对 css 文件的处理过程了。
 
+## css 配置流程篇
+
+#### module options：
+
+- `localsConvention: "camelCaseOnly"`,  	// 修改生成的配置对象的 key 的展示形式 (驼峰  或者 中划线形式)。
+
+- `scopeBehaviour: "local"`,     // 配置当前的模块化行为是模块化还是全局化 (有hash就是开启了模块化的一个标志, 因为他可以保证产生不同的hash值来控制我们的样式类名不被覆盖)。
+
+- *`generateScopedName: "[name]_[local]_[hash:5]"`,     // https://github.com/webpack/loader-utils#interpolatename。
+
+- `hashPrefix: "hello"`,     // 生成 hash 会根据样式 **类名 + 一些其他的字符串**(文件名 + 文件内部随机生成一个字符串) 进行生成, 如果想要生成 hash 更加复杂,可以配置 **hashPrefix** 参数。
+
+  -  `hashPrefix`：该配置的这个字符串会参与到最终的 hash 生成（字符串的不同决定了 hash 值得不同）。
+
+-  `globalModulePaths: ["./componentB.module.css"]`,     //  所指路劲不参与到 css 模块化的解析规则。
+
+  ```js
+  modules: {
+    localsConvention: "camelCaseOnly",
+    scopeBehaviour: "local",
+    generateScopedName: "[name]_[local]_[hash:5]",
+    // generateScopedName: (name, filename, css) => {
+    //     // name -> 代表的是你此刻css文件中的类名
+    //     // filename -> 是你当前css文件的绝对路径
+    //     // css -> 给的就是你当前样式
+    //     console.log("name", name, "filename", filename, "css", css); // 这一行会输出在哪？？？ 输出在node
+    //     // 配置成函数以后, 返回值就决定了他最终显示的类型
+    //     return `${name}_${Math.random().toString(36).substr(3, 8) }`;
+    // }
+    hashPrefix: "inblossoms",
+    globalModulePaths: ["./src/css/box.module.less"],
+  },
+  ```
+
+  
+
 
 
 

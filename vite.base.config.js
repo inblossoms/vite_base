@@ -5,4 +5,13 @@ export default defineConfig({
   optimizeDeps: {
     exclude: [],
   },
+  css: {
+    modules: {
+      localsConvention: "camelCaseOnly",
+      generateScopedName: "local",
+      scopeBehaviour: "local",
+      hashPrefix: "inblossoms",
+      // globalModulePaths: ["./src/css/box.module.less"],
+    },
+  },
 });
