@@ -37,6 +37,11 @@
 
    - 因为vite他在读取vite.config.js的时候会率先通过node去解析文件语法, 如果发现你是esmodule规范会直接将esmodule规范进行替换变成commonjs规范；
 
+8. 浏览为什么可以识别 .vue 文件？
+
+   - vite 会将文件事先转换成字符串，浏览器回根据设置的 "Content-Type" 来对 .vue 文件解析。
+   - 关于 .vue 文件，vite 会调用底层方法：vue.createElement() ，在 ast 语法分析的基础上构建原生dom。
+
 ## vite 预加载机制
 
 - vite 首先会按照用户自定义的入口文件中所引用的依赖调用esbuild (对js语法进行处理的库)，将各种规范的代码转换成ejs规范。然后将转换后的代码放置在当前目录下的 node_modules/.vite/deps 文件中，同时对ejs规范的各个模块进行统一集成，按照用户自定义的出口进行文件输出。
@@ -183,7 +188,29 @@
   - 在访问 import.meta.env，为了防止我们将隐私性的变量直接送进import.meta.env中vite对参数做了拦截（默认值显示以 VITE_ 开头的参数），如果配置的环境变量不是以 VITE_ 开头的, 他就不会将配置文件中的参数注入到客户端中去, 如果我们需要更改这个前缀, 可以去使用envPrefix配置
   - 关于 envPrefix：https://cn.vitejs.dev/config/shared-options.html#envprefix
 
+##　vite对于css的支持：
 
+- vite 底层会对 css 文件存在天然地支持：
+
+  1. vite在读取到main.js中引用到了Index.css，会直接去使用 fs 模块读取 index.css 中文件内容做字符串的转化；
+
+  2. 创建一个style标签的同时, 将转化成字符串的 index.css 文件内容 copy 进style标签里；
+
+  3. vite 会将 style 标签插入到 index.html 的 head 中，该 css 文件中的内容直接替换为 js 脚本(方便热更新或者css模块化), 同时设置 Content-Type 为 js 脚本从而让浏览器以 js 脚本的形式来执行该css后缀的文件，从而使得样式生效；
+
+- vite 对于 css 的模块化构建:
+
+  - 思考一个问题：在早期的 js 中，我们为了避免命名冲突问题产生了多种方法，其中模块化方法成为了现在最佳的方式。vite 在关于 css 文件的处理同样做到了这一点：
+    - 由于我们无法避免引入的文件是否会存在命名冲突问题而导致样式覆盖问题，vite 关于 css 文件的模块化构建随着产生：**css module**。
+
+  - 什么是 css module?
+
+    1. 我们要知道 vite 对于文件的处理是依赖于 node 环境的，当我们的样式文件以 `style.module.css` 的方式来命名时，则会触发 vite 关于 css 模块化构建。（module是一种约定, 代表着 css 的模块化开启）；
+
+    2. vite 会将解析到的 css 类名（其他样式选择器类似）进行替换，以 **类名 + hash值** 的方式来避免命名冲突的问题，并映射成键值对对象 { style: "_style_i22st_1" }
+
+    3. 通过类名替换后的内容，此时 css 文件依旧是一个字符串；
+    4. 接下来就是 vite 对 css 文件的处理过程了。
 
 
 
