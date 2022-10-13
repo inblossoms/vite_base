@@ -23,5 +23,6 @@ export default defineConfig({
       },
     },
     devSourcemap: true,
+    // postcss: {}, 这里配置 postcss 的优先级会高于描述文件
   },
 });

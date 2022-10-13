@@ -5,12 +5,16 @@ body {
 	background-color: var(--globalColor);
 	.container {
 		box-shadow: 0 0 10px black;
-		width: 200px / 2;
 		height: (200px / 2) ;
+		width: clamp(150px, 50%, 500px);
 		border: solid red 3px;
 		border-radius: 8%;
 		text-align: center;
 		line-height: 100px;
+		-webkit-user-select: none;
+		   -moz-user-select: none;
+		    -ms-user-select: none;
+		        user-select: none;
 		background-color: @mainBackColor;
 	}
 }

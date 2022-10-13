@@ -361,6 +361,8 @@ preprocessorOptions: {
 
 vite 生态对 postcss 天生就有着友好的支持。它主要为 css 提供兼容性的工作，允许使用 js 插件做样式的转换。对于 css 的关系类似于 babel 和 javascript 的关系；postcss 接收一个 css 文件并提供 api，通过对文件建立相应的 ast 来分析、修改规则，使得其可以被多个插件利用做更多的事情。
 
+npm: https://www.npmjs.com/package/postcss-preset-env
+
 中文文档： https://github.com/postcss/postcss/blob/HEAD/docs/README-cn.md
 
 #### postcss 的前世今生：
@@ -372,7 +374,31 @@ vite 生态对 postcss 天生就有着友好的支持。它主要为 css 提供�
 **postcss 的使用：**
 
 1. 安装依赖 `pnpm i postcss-cli postcss postcss-preset-env -D`
-2. 创建描述文件 `postcss.config.js`
+2. 创建描述文件 `postcss.config.js`  如果在 配置文件中设置 postcss，那么 postcss: {} 配置的优先级会高于描述文件。
+
+```js
+// postcss-config.js
+
+const postcssPresetEnv = require("postcss-preset-env");
+const path = require("path");
+const autoprefixer = require("autoprefixer");
+
+module.exports = {
+  plugins: [
+    postcssPresetEnv({
+      // 在较新版本的浏览器中，有些 css 属性可能已被支持，所以我们在控制台不能看到转换为可以被兼容性的代码
+      // 通过以下配置，可以获得代码降级
+      importFrom: path.resolve(__dirname, "./src/css/index.css"),
+    }),
+    autoprefixer({
+      browsers: [">1%", "last 2 versions", "not dead"],
+    }),
+  ],
+};
+```
+
+3. 这里我们特别说一下 `postcss-preset-env`：它所做的是获取来自 MDN https://developer.mozilla.org/zh-CN/ 和 Can I Use https://caniuse.com/ 的支持数据，并从浏览器列表确定是否需要这些转换。**它还将 Autoprefixer 打包在内并与其共享列表**，因此只有在给定浏览器支持列表的情况下需要使用前缀时才会应用前缀，具有复杂的逻辑来修复尤其是针对 IE 和旧 Edge 中的 CSS 。
+4. `postcssPresetEnv`：在所有 node 环境下都可以运行，支持任何标准的 Browserslist 配置，它可以是 **Browserslstrc** 文件，package.json 中的 **Browserslist** 键，或者 **Browserslist** 环境变量。
 
 
 
