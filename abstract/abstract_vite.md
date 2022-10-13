@@ -357,11 +357,22 @@ preprocessorOptions: {
 
 🌈 类似于 js 中 source map，该配置的开启同样为 css 提供了语法错误的定位能力。默认为：`false`
 
+### postcss：
 
+vite 生态对 postcss 天生就有着友好的支持。它主要为 css 提供兼容性的工作，允许使用 js 插件做样式的转换。对于 css 的关系类似于 babel 和 javascript 的关系；postcss 接收一个 css 文件并提供 api，通过对文件建立相应的 ast 来分析、修改规则，使得其可以被多个插件利用做更多的事情。
 
+中文文档： https://github.com/postcss/postcss/blob/HEAD/docs/README-cn.md
 
+#### postcss 的前世今生：
 
+首先我们先来了解一下 postcss 是做什么的。我们来想一个场景：有一天你和你的外国朋友一同到了一个陌生的环境，遇到一位说着一口方言的司机问你去哪？这时路边的行人为你做了翻译，而你又翻译给了你的朋友。而整个对话过程就类似 postcss 的工作流程，使得 css 文件最后执行不会出现无法识别的情况。
 
+大多数人对 postcss 存在着一个误区：就是他们会认为 postcss 和 预处理器是类似的，但事实上 postcss 是建立在预处理器编译之后的基础上工作的，怎个工作流程会涉及很多的转换、编译、再处理。所以业内也就产生了一个新的说法，**postcss 是后处理器**。
+
+**postcss 的使用：**
+
+1. 安装依赖 `pnpm i postcss-cli postcss postcss-preset-env -D`
+2. 创建描述文件 `postcss.config.js`
 
 
 
