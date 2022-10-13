@@ -13,5 +13,15 @@ export default defineConfig({
       hashPrefix: "inblossoms",
       // globalModulePaths: ["./src/css/box.module.less"],
     },
+    preprocessorOptions: {
+      less: {
+        math: "always",
+        globalVars: {
+          mainBackColor: "#008c8c50",
+          mainFont: "18px",
+        },
+      },
+    },
+    devSourcemap: true,
   },
 });

@@ -212,9 +212,9 @@
     3. 通过类名替换后的内容，此时 css 文件依旧是一个字符串；
     4. 接下来就是 vite 对 css 文件的处理过程了。
 
-## css 配置流程篇
+## css 配置流程篇：
 
-#### module options：
+### module options：
 
 - `localsConvention: "camelCaseOnly"`,  	// 修改生成的配置对象的 key 的展示形式 (驼峰  或者 中划线形式)。
 
@@ -246,9 +246,116 @@
   },
   ```
 
-  
 
+### preprocessorOptions options：
 
+> **option address** ：https://cn.vitejs.dev/config/shared-options.html#css-preprocessoroptions
+>
+> - css 的预处理器：scss、**less**、stylus； 
+>
+> 🌈 出于 less 本身是由 JavaScript 编写的，简化了配置的设置发杂度，我们下面就以 less 为例，其他处理器等同。
+
+**参数类型**： `Record<string, object>`，key（预处理器） + config（用户配置参数） 的形式。
+
+1. 安装 `pnpm i less -D` less 环境，不介意安装全局环境只需在项目安装该依赖即可；
+2. 测试 less 的执行环境：`npx lessc filename.less`  ；
+
+```js
+preprocessorOptions: {
+  less: { 
+    // 整个的配置对象都会最终给到less的执行参数（全局参数）中去
+  },
+},
+```
+
+3. 此时我们已经可以在项目中使用 less 预处理器了。
+
+**处理器配置参数：**
+
+1. `math`：存在四种设置参数 
+
+   Less 重新构建了数学选项，提供了以前的 strictMath 设置(始终需要括号)和默认设置(在所有情况下都执行数学)之间的一个特性。
+
+   接下来，我们来看一下不同参数产生的结果：
+
+   ```css
+   // .less 样式文件
+   .container {
+     width: 200px / 2;
+     height: (200px / 2) ;
+   }
+   
+   // 配置文件
+   ...
+   preprocessorOptions: {
+     less: { 
+       math: ""
+     },
+   },
+   
+   ```
+
+   当 `math：""` 取默认值时，这里我们执行 `npx lessc filename.less` 来查看编译结果：
+
+   ```css
+   .container {
+     width: 200px / 2; 							// math 在默认情况下不会处理这种方式
+     height: 100px;
+   }
+   ```
+
+   当 `math："always"` 时，这里我们执行 `npx lessc filename.less` 来查看编译结果：
+
+   ```css
+   .container {
+     width: 100px;   
+     height: 100px;
+   }
+   ```
+
+   当我们取其他值时，可以在官网查看示例  https://lesscss.org/usage/#less-options-math。
+
+2. `globalVars`：全局变量的引用，声明将被放置在基本的 Less 文件的顶部，这意味着它可以被使用，但是如果在样式文件中定义了这个变量，它就会被覆盖。
+
+   在使用该参数前，我们来看一下日常工作中走进了哪些误区：
+
+   - 大多数人在使用全部变量通常是这样的：
+
+   ```css
+   // global_params.less
+   @mainColor: red;
+   @mainFont: 16px;
+   ```
+
+   - 在多个不同的地方进行多次的文件导入，进而使用全局参数:
+
+   ```css
+   // a.less
+   @import url("./global_params.less");
+   // b.less
+   @import url("./global_params.less");
+   ```
+
+   - **多次的导入为我们的工作带来了不必要的麻烦，也增加了代码的冗余**，其实在 less 早些版本我们就可以通过指令 `npx lessc ----math="always" filename.less` 来添加全局变量来为我们提供便捷。
+
+   接下来，我们在配置项中来使用该参数：
+
+   - 这样我们依旧可以按照 less 语法规范来继续使用全局变量，同时又不需要重复的引用
+
+   ```cs
+   preprocessorOptions: {
+     less: {
+       globalVars: {
+         mainBackColor: "#008c8c50",
+         mainFont: "18px",
+       },
+     },
+   },
+   ```
+
+### devSourcemap：
+
+🌈 类似于 js 中 source map，该配置的开启同样为 css 提供了语法错误的定位能力。默认为：`false`
 
 
 
