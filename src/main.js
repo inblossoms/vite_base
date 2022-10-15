@@ -1,9 +1,10 @@
+import { name } from "@assets/json/user.json";
 import { add } from "./js/tools";
-// import "./js/request";
+import "./js/wind_svg";
 import "./js/images.js";
 import "./js/box.js";
 import "./css/index.css";
-import { name } from "@assets/json/user.json";
+// import "./js/request";
 
 const count = add(2, 3);
 console.log("add : ", count);
