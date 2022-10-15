@@ -400,7 +400,19 @@ module.exports = {
 3. 这里我们特别说一下 `postcss-preset-env`：它所做的是获取来自 MDN https://developer.mozilla.org/zh-CN/ 和 Can I Use https://caniuse.com/ 的支持数据，并从浏览器列表确定是否需要这些转换。**它还将 Autoprefixer 打包在内并与其共享列表**，因此只有在给定浏览器支持列表的情况下需要使用前缀时才会应用前缀，具有复杂的逻辑来修复尤其是针对 IE 和旧 Edge 中的 CSS 。
 4. `postcssPresetEnv`：在所有 node 环境下都可以运行，支持任何标准的 Browserslist 配置，它可以是 **Browserslstrc** 文件，package.json 中的 **Browserslist** 键，或者 **Browserslist** 环境变量。
 
+### vite在生产环境下对静态资源的处理：
 
+1. hash 对静态数据的影响：
+
+   首先来确认一下我们在工作中除去接口获取的动态数据，都可定义为是静态数据。
+
+   我们会发现打包后的静态资源会有 hash 值，这样设置是因为浏览器存在缓存机制。当文件发生了变动，存在hash值的文件名是会由内容的变动而更新的，这也将便于浏览器对文件的重新加载；如果文件名是一成不变的，那么将会导致文件内容更新后浏览器读取的依旧是先前版本的代码。hash 算法，让我们可以很好的控制浏览器的缓存。
+
+### vite 插件
+
+1. 怎么定义打包工具中的插件？
+
+   vite 包括 webpack 会在其执行的生命周期的不同阶段调用不同的工具（插件）处理不同的事务以达到不同的目的。
 
 
 
