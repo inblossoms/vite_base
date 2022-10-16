@@ -1,6 +1,7 @@
+import { viteMockServe } from "vite-plugin-mock";
+import mHttpPlugin from "./plugins/htmlPlugin";
 import mAlias from "./plugins/alias";
 import { defineConfig } from "vite"; // 开启vite配置文件语法提示
-import mHttpPlugin from "./plugins/htmlPlugin";
 // import path from "path";
 // import { ViteAliases } from "vite-aliases";
 
@@ -54,6 +55,7 @@ export default defineConfig({
         },
       },
     }),
+    // viteMockServe(),
   ],
   devSourcemap: true,
 });

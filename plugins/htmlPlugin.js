@@ -3,7 +3,7 @@ module.exports = function (option) {
     transformIndexHtml: {
       enforce: "pre",
       transform: (html, ctx) => {
-        console.log("html: ", html);
+        // console.log("html: ", html);
 
         return html.replace(/<%= title %>/g, option.inject.data.title);
       },
