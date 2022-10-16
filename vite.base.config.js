@@ -1,6 +1,8 @@
+import mAlias from "./plugins/alias";
 import { defineConfig } from "vite"; // 开启vite配置文件语法提示
+import mHttpPlugin from "./plugins/htmlPlugin";
 // import path from "path";
-import { ViteAliases } from "vite-aliases";
+// import { ViteAliases } from "vite-aliases";
 
 export default defineConfig({
   envPrefix: "ENV_", // 配置vite注入env变量客户端环境前缀校验
@@ -43,5 +45,15 @@ export default defineConfig({
     outDir: "dist",
     assetsDir: "static",
   },
-  plugins: [ViteAliases()],
+  plugins: [
+    mAlias() /**ViteAliases()*/,
+    mHttpPlugin({
+      inject: {
+        data: {
+          title: "vite html template",
+        },
+      },
+    }),
+  ],
+  devSourcemap: true,
 });
