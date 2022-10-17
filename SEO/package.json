@@ -1,0 +1,22 @@
+{
+  "name": "seo",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "tsc --noEmit && vite build",
+    "dev": "vite dev"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@types/lodash": "^4.14.186",
+    "@types/node": "^18.11.0",
+    "lodash": "^4.17.21",
+    "typescript": "^4.8.4",
+    "vite": "^3.1.8",
+    "vite-plugin-checker": "^0.5.1"
+  }
+}

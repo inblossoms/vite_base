@@ -18,8 +18,3 @@ fetch("api/users", {
   .catch((error) => {
     console.log("error", error);
   });
-
-/**
- * 优化：
- * 		1. 如果在生产环境非常臃肿，可以考虑控制导入。对依赖文件进行结垢优化，便于构建工具进行 tree shaking 优化。
- */
