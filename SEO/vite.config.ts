@@ -1,6 +1,7 @@
-import { defineConfig } from "vite";
-import checker from "vite-plugin-checker";
 import viteCompression from "vite-plugin-compression";
+import importToCDN from "vite-plugin-cdn-import";
+import checker from "vite-plugin-checker";
+import { defineConfig } from "vite";
 
 export default defineConfig({
   build: {
@@ -21,5 +22,14 @@ export default defineConfig({
       typescript: true,
     }),
     viteCompression(), //
+    importToCDN({
+      modules: [
+        {
+          name: "lodash",
+          var: "_",
+          path: `https://cdn.jsdelivr.net/npm/lodash@4.17.21/lodash.min.js`,
+        },
+      ],
+    }),
   ],
 });
