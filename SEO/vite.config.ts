@@ -1,5 +1,6 @@
 import { defineConfig } from "vite";
 import checker from "vite-plugin-checker";
+import viteCompression from "vite-plugin-compression";
 
 export default defineConfig({
   build: {
@@ -19,5 +20,6 @@ export default defineConfig({
     checker({
       typescript: true,
     }),
+    viteCompression(),
   ],
 });
