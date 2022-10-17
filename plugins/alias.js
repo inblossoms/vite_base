@@ -14,11 +14,11 @@ module.exports = function ({ prefix = "@" } = {}) {
      */
     config(UserConfig, env = { mode, command }) {
       // TODO 该方法返回一个对象 对象内的参数是可选的
-      console.log("UserConfig:", UserConfig);
-      console.log("env:", env);
+      // console.log("UserConfig:", UserConfig);
+      // console.log("env:", env);
 
       const aliasPath = getTotalScrDir(prefix);
-      console.log(aliasPath);
+      // console.log(aliasPath);
       return {
         resolve: { alias: aliasPath },
       };

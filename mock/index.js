@@ -13,7 +13,7 @@ const userList = mockJs.mock({
   ],
 });
 
-console.log(userList);
+// console.log(userList);
 
 module.exports = [
   {
