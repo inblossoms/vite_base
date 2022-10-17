@@ -8,7 +8,7 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: (id: string) => {
-          console.log(id);
+          console.log("dist dir file:", id);
           if (id.includes("node_modules")) {
             return "vender";
           }
@@ -20,6 +20,6 @@ export default defineConfig({
     checker({
       typescript: true,
     }),
-    viteCompression(),
+    viteCompression(), //
   ],
 });
